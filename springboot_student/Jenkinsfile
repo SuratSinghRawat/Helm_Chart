@@ -1,0 +1,56 @@
+pipeline {
+    options {
+        skipDefaultCheckout true
+    }
+    agent none
+
+    stages {        
+        stage('Checkout') {
+            agent {label 'K8s-Master'}
+            steps {
+                script {
+                    // Define the repository URL and the branch you want to checkout
+                    def repoUrl = 'https://github.com/SuratSinghRawat/Helm_Chart.git'
+                    def branch = 'main'
+                    
+                    // Initialize a new git repository
+                    sh 'git init'
+                    def remoteExists = sh(script: "git remote | grep helmchart", returnStatus: true)
+                    //sh 'git remote remove helmchart'
+                    if(remoteExists != 0) {
+                        echo "inside true"
+                        sh "git remote add helmchart ${repoUrl}"
+                    } else{
+                        echo "inside false"
+                        sh 'git remote remove helmchart'
+                        sh "git remote add helmchart ${repoUrl}"
+                    }
+                    // Add the remote repository
+                    //sh "git remote add helmchart ${repoUrl}"
+
+                    // Enable sparse checkout
+                    sh 'git config core.sparseCheckout true'
+
+                    sh 'git sparse-checkout set springboot_student'
+
+                    // Fetch only the specified files/directories from the repository
+                    sh "git fetch --depth=1 helmchart ${branch}"
+
+                    // Checkout the files
+                    sh "git checkout ${branch}"
+                    echo "Workspace path: ${env.WORKSPACE}"
+                }
+            }
+        }
+        stage("Helm deploy"){
+            agent {label 'K8s-Master'}
+            steps{
+                script{
+                    sh "aws ecr get-login-password --region ap-south-1| docker login --username AWS --password-stdin 211125636900.dkr.ecr.ap-south-1.amazonaws.com"
+                    //sh "sudo cp -R /var/jenkins/workspace/testing-slave/reactapp /var/helmchart/"
+                    sh "helm upgrade myreactapp --install ${env.WORKSPACE}/springboot_student"
+                }
+            }
+        }
+    }
+}

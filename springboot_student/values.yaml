@@ -5,12 +5,13 @@
 replicaCount: 1
 
 image:
-  repository: springboot_ui_cicd
+  repository: 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: "1"
 
-imagePullSecrets: []
+imagePullSecrets: 
+  - name: erc-pull-registry
 nameOverride: ""
 fullnameOverride: ""
 
@@ -71,14 +72,14 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
 
 autoscaling:
   enabled: false
