@@ -38,10 +38,17 @@ pipeline {
 
                     // Checkout the files
                     sh "git checkout ${branch}"
+                    echo "Workspace path: ${env.WORKSPACE}"
                 }
             }
         }
-
-        
+        stage("Helm deploy"){
+            agent {label 'K8s-Master'}
+            steps{
+                script{
+                    sh "helm upgrade myreactapp --install /var/helmchart/reactapp"
+                }
+            }
+        }
     }
 }
