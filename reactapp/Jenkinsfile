@@ -46,7 +46,8 @@ pipeline {
             agent {label 'K8s-Master'}
             steps{
                 script{
-                    sh "helm upgrade myreactapp --install /var/helmchart/reactapp"
+                    sh "aws ecr get-login-password --region ap-south-1| docker login --username AWS --password-stdin 211125636900.dkr.ecr.ap-south-1.amazonaws.com"
+                    sh "helm upgrade myreactapp --install ${env.WORKSPACE}/reactapp"
                 }
             }
         }
