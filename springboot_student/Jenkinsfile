@@ -48,7 +48,7 @@ pipeline {
                 script{
                     sh "aws ecr get-login-password --region ap-south-1| docker login --username AWS --password-stdin 211125636900.dkr.ecr.ap-south-1.amazonaws.com"
                     //sh "sudo cp -R /var/jenkins/workspace/testing-slave/reactapp /var/helmchart/"
-                    sh "helm upgrade myreactapp --install ${env.WORKSPACE}/springboot_student"
+                    sh "helm upgrade myspringboot --install ${env.WORKSPACE}/springboot_student"
                 }
             }
         }
