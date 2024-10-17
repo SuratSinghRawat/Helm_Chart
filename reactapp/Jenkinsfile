@@ -1,0 +1,45 @@
+pipeline {
+    agent none
+
+    stages {
+        
+        stage('Checkout') {
+            agent {label 'K8s-Master'}
+            steps {
+                script {
+                    // Define the repository URL and the branch you want to checkout
+                    def repoUrl = 'https://github.com/SuratSinghRawat/Helm_Chart.git'
+                    def branch = 'main'
+                    
+                    // Initialize a new git repository
+                    sh 'git init'
+                    def remoteExists = sh(script: "git remote | grep helmchart", returnStatus: true)
+                    //sh 'git remote remove helmchart'
+                    if(remoteExists != 0) {
+                        echo "inside true"
+                        sh "git remote add helmchart ${repoUrl}"
+                    } else{
+                        echo "inside false"
+                        sh 'git remote remove helmchart'
+                        sh "git remote add helmchart ${repoUrl}"
+                    }
+                    // Add the remote repository
+                    //sh "git remote add helmchart ${repoUrl}"
+
+                    // Enable sparse checkout
+                    sh 'git config core.sparseCheckout true'
+
+                    sh 'git sparse-checkout set reactapp'
+
+                    // Fetch only the specified files/directories from the repository
+                    sh "git fetch --depth=1 helmchart ${branch}"
+
+                    // Checkout the files
+                    sh "git checkout ${branch}"
+                }
+            }
+        }
+
+        
+    }
+}
