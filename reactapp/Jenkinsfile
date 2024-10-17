@@ -1,8 +1,10 @@
 pipeline {
+    options {
+        skipDefaultCheckout true
+    }
     agent none
 
-    stages {
-        
+    stages {        
         stage('Checkout') {
             agent {label 'K8s-Master'}
             steps {
