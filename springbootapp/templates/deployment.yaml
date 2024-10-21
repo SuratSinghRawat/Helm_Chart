@@ -36,6 +36,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ include "springbootapp.mongodb.fullname" . }}:{{ .Values.mongodbService.port }}/{{ .Values.mongodb.database }}"
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
