@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-deployment
+  labels:
+    app: springboot-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: springboot-app
+          image: 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp:33
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://read:singh@mongodb-service:27017/LindaDb"
+

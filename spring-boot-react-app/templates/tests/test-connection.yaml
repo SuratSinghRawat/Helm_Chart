@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-connection"
+  labels:
+    {{- include "spring-boot-react-app.labels" . | nindent 4 }}
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Release.Name }}-spring-boot-service:{{ .Values.springBootApp.service.port }}']
+  restartPolicy: Never

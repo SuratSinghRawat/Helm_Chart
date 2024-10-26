@@ -1,0 +1,35 @@
+springBootApp:
+  image:
+    repository: 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp
+    tag: "30"
+  service:
+    type: ClusterIP
+    port: 8088
+  imagePullSecrets: 
+  - name: erc-pull-registry
+
+reactApp:
+  image:
+    repository: 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/reactapp
+    tag: "1"
+  service:
+    type: NodePort
+    port: 3000
+  imagePullSecrets: 
+  - name: erc-pull-registry
+    
+mongodb:
+  image: mongo
+  tag: latest
+  username: read
+  password: singh
+  database: LindaDb
+mongodbService:
+  type: ClusterIP
+  port: 27017
+
+serviceAccount:
+  create: true
+  name: ""  # Leave empty if you want Helm to automatically generate a name
+env:
+  REACT_APP_PROD_IP: {{ .Values.springBootApp.service.type }}

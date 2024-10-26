@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-deployment
+  labels:
+    app: react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react
+  template:
+    metadata:
+      labels:
+        app: react
+    spec:
+      containers:
+        - name: react
+          image: 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/reactapp:9
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_PROD_IP
+              value: {{ .Values.env.REACT_APP_PROD_IP | quote }}
+            - name: REACT_APP_API_BASE_URL
+              value: {{ .Values.env.API_BASE_URL }}
+          

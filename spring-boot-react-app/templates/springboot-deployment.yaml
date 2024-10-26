@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-spring-boot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-spring-boot
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-spring-boot
+    spec:
+      containers:
+        - name: spring-boot-app
+          image: "{{ .Values.springBootApp.image.repository }}:{{ .Values.springBootApp.image.tag }}"
+          ports:
+            - containerPort: 8088
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"

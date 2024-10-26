@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-react
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-react
+    spec:
+      containers:
+        - name: react-app
+          image: "{{ .Values.reactApp.image.repository }}:{{ .Values.reactApp.image.tag }}"
+          ports:
+            - containerPort: 3000
